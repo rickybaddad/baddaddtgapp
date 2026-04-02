@@ -5,6 +5,10 @@ APP_NAME="BadDadDTGQueueManager"
 BUILD_DIR=".build/release"
 APP_BUNDLE="${APP_NAME}.app"
 
+# Fix for Command Line Tools without full Xcode (xctest not found error)
+export DEVELOPER_DIR=/Library/Developer/CommandLineTools
+export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
+
 echo "Building ${APP_NAME}..."
 swift build -c release 2>&1
 
