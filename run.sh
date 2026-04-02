@@ -6,19 +6,21 @@ APP_BUNDLE="${APP_NAME}.app"
 OUT_DIR=".build/release"
 BINARY="${OUT_DIR}/${APP_NAME}"
 
-ARCH=$(uname -m)
-TARGET="${ARCH}-apple-macosx12.0"
+# SDK provides C/ObjC headers (Foundation, AppKit headers)
+SDK=$(xcrun --sdk macosx --show-sdk-path)
 
 # Collect all Swift source files
 SWIFT_FILES=$(find BadDadDTGQueueManager -name "*.swift" | sort)
 
-echo "Building ${APP_NAME} for ${ARCH}..."
+echo "Building ${APP_NAME}..."
 mkdir -p "${OUT_DIR}"
 
-# Use system frameworks directly — CLT SDK omits SwiftUI Swift module files,
-# but they exist on the installed macOS at /System/Library/Frameworks
+# -sdk: C/ObjC headers from CLT
+# -F /System/Library/Frameworks: Swift module files (SwiftUI.swiftmodule etc.)
+#   CLT SDK omits these; the installed macOS system has them
+# No -target: let swiftc default to the host machine's target
 swiftc \
-  -target "${TARGET}" \
+  -sdk "${SDK}" \
   -parse-as-library \
   -F "/System/Library/Frameworks" \
   -framework SwiftUI \
