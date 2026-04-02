@@ -8,17 +8,20 @@ BINARY="${OUT_DIR}/${APP_NAME}"
 
 SDK=$(xcrun --sdk macosx --show-sdk-path)
 ARCH=$(uname -m)
-TARGET="${ARCH}-apple-macos13.0"
+# Detect actual SDK version to use as deployment target
+SDK_VERSION=$(xcrun --sdk macosx --show-sdk-version)
+TARGET="${ARCH}-apple-macosx${SDK_VERSION}"
 
 # Collect all Swift source files
 SWIFT_FILES=$(find BadDadDTGQueueManager -name "*.swift" | sort)
 
-echo "Building ${APP_NAME} for ${ARCH}..."
+echo "Building ${APP_NAME} for ${ARCH} (SDK ${SDK_VERSION})..."
 mkdir -p "${OUT_DIR}"
 swiftc \
   -sdk "${SDK}" \
   -target "${TARGET}" \
   -parse-as-library \
+  -F "${SDK}/System/Library/Frameworks" \
   -framework SwiftUI \
   -framework AppKit \
   -O \
