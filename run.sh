@@ -2,21 +2,34 @@
 set -e
 
 APP_NAME="BadDadDTGQueueManager"
-BUILD_DIR=".build/release"
 APP_BUNDLE="${APP_NAME}.app"
+OUT_DIR=".build/release"
+BINARY="${OUT_DIR}/${APP_NAME}"
 
-# Fix for Command Line Tools without full Xcode (xctest not found error)
-export DEVELOPER_DIR=/Library/Developer/CommandLineTools
-export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
+SDK=$(xcrun --sdk macosx --show-sdk-path)
+ARCH=$(uname -m)
+TARGET="${ARCH}-apple-macos13.0"
 
-echo "Building ${APP_NAME}..."
-swift build -c release 2>&1
+# Collect all Swift source files
+SWIFT_FILES=$(find BadDadDTGQueueManager -name "*.swift" | sort)
+
+echo "Building ${APP_NAME} for ${ARCH}..."
+mkdir -p "${OUT_DIR}"
+swiftc \
+  -sdk "${SDK}" \
+  -target "${TARGET}" \
+  -parse-as-library \
+  -framework SwiftUI \
+  -framework AppKit \
+  -O \
+  ${SWIFT_FILES} \
+  -o "${BINARY}"
 
 echo "Creating app bundle..."
 mkdir -p "${APP_BUNDLE}/Contents/MacOS"
 mkdir -p "${APP_BUNDLE}/Contents/Resources"
 
-cp "${BUILD_DIR}/${APP_NAME}" "${APP_BUNDLE}/Contents/MacOS/${APP_NAME}"
+cp "${BINARY}" "${APP_BUNDLE}/Contents/MacOS/${APP_NAME}"
 
 cat > "${APP_BUNDLE}/Contents/Info.plist" << 'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
