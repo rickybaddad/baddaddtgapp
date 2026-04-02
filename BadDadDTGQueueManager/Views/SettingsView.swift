@@ -28,7 +28,7 @@ struct GeneralSettingsView: View {
 
     var body: some View {
         Form {
-            Section("Queue Processing") {
+            Section(header: Text("Queue Processing")) {
                 Toggle("Auto-process queue", isOn: $autoProcess)
 
                 HStack {
@@ -39,7 +39,6 @@ struct GeneralSettingsView: View {
                 }
             }
         }
-        .formStyle(.grouped)
         .padding()
     }
 }
@@ -49,25 +48,25 @@ struct AutomationSettingsView: View {
 
     var body: some View {
         Form {
-            Section("GTX File Viewer") {
+            Section(header: Text("GTX File Viewer")) {
                 Toggle("Close File Viewer after sending", isOn: $closeFileViewer)
             }
 
-            Section("Status") {
-                LabeledContent("Accessibility Permission") {
-                    HStack {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .foregroundColor(.orange)
-                        Text("Not Granted")
-                    }
+            Section(header: Text("Status")) {
+                HStack {
+                    Text("Accessibility Permission")
+                    Spacer()
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundColor(.orange)
+                    Text("Not Granted")
+                        .foregroundColor(.secondary)
                 }
 
-                Button("Open System Settings") {
+                Button("Open System Preferences") {
                     // Will implement later
                 }
             }
         }
-        .formStyle(.grouped)
         .padding()
     }
 }
