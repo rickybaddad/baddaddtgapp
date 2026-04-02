@@ -8,7 +8,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = statusItem?.button {
-            button.image = NSImage(systemSymbolName: "printer.fill", accessibilityDescription: "Queue")
+            button.title = "DTG"
         }
         let menu = NSMenu()
         menu.addItem(NSMenuItem(title: "Open Queue Manager", action: #selector(openApp), keyEquivalent: ""))

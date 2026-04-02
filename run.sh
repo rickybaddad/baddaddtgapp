@@ -6,22 +6,21 @@ APP_BUNDLE="${APP_NAME}.app"
 OUT_DIR=".build/release"
 BINARY="${OUT_DIR}/${APP_NAME}"
 
-SDK=$(xcrun --sdk macosx --show-sdk-path)
 ARCH=$(uname -m)
-# Detect actual SDK version to use as deployment target
-SDK_VERSION=$(xcrun --sdk macosx --show-sdk-version)
-TARGET="${ARCH}-apple-macosx${SDK_VERSION}"
+TARGET="${ARCH}-apple-macosx12.0"
 
 # Collect all Swift source files
 SWIFT_FILES=$(find BadDadDTGQueueManager -name "*.swift" | sort)
 
-echo "Building ${APP_NAME} for ${ARCH} (SDK ${SDK_VERSION})..."
+echo "Building ${APP_NAME} for ${ARCH}..."
 mkdir -p "${OUT_DIR}"
+
+# Use system frameworks directly — CLT SDK omits SwiftUI Swift module files,
+# but they exist on the installed macOS at /System/Library/Frameworks
 swiftc \
-  -sdk "${SDK}" \
   -target "${TARGET}" \
   -parse-as-library \
-  -F "${SDK}/System/Library/Frameworks" \
+  -F "/System/Library/Frameworks" \
   -framework SwiftUI \
   -framework AppKit \
   -O \
@@ -52,7 +51,7 @@ cat > "${APP_BUNDLE}/Contents/Info.plist" << 'EOF'
     <key>CFBundleVersion</key>
     <string>1</string>
     <key>LSMinimumSystemVersion</key>
-    <string>13.0</string>
+    <string>12.0</string>
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>NSPrincipalClass</key>
